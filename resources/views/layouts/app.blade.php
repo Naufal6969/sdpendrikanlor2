@@ -18,7 +18,12 @@
             <a href="{{ route('home') }}" class="navbar-brand">
                 <img src="{{ asset('images/logo.jpeg') }}" alt="Logo">
             </a>
-            <ul class="navbar-nav">
+            <button class="navbar-toggle" type="button" aria-label="Buka navigasi" aria-expanded="false" aria-controls="main-navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="navbar-nav" id="main-navigation">
                 <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a></li>
                 
                 <li class="dropdown">
@@ -109,6 +114,32 @@
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
+            const navbarToggle = document.querySelector('.navbar-toggle');
+            const navbarNav = document.querySelector('.navbar-nav');
+
+            navbarToggle?.addEventListener('click', () => {
+                const isOpen = navbarNav.classList.toggle('is-open');
+                navbarToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                navbarToggle.setAttribute('aria-label', isOpen ? 'Tutup navigasi' : 'Buka navigasi');
+            });
+
+            document.querySelectorAll('.dropdown-toggle').forEach((toggle) => {
+                toggle.addEventListener('click', (event) => {
+                    if (window.innerWidth <= 768) {
+                        event.preventDefault();
+                        toggle.parentElement.classList.toggle('is-open');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.navbar-nav a:not(.dropdown-toggle)').forEach((link) => {
+                link.addEventListener('click', () => {
+                    navbarNav?.classList.remove('is-open');
+                    navbarToggle?.setAttribute('aria-expanded', 'false');
+                    navbarToggle?.setAttribute('aria-label', 'Buka navigasi');
+                });
+            });
+
       AOS.init({
         duration: 800,
         once: true,
