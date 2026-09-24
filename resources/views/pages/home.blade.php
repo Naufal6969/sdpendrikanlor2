@@ -65,7 +65,14 @@
     <div class="swiper mySwiper">
         <div class="swiper-wrapper">
             @foreach($sliders as $slider)
-            <div class="swiper-slide" style="background-image: url('{{ \Illuminate\Support\Str::startsWith($slider->image, 'sliders/') ? asset('storage/' . $slider->image) : asset('images/' . $slider->image) }}');">
+            @php
+                $sliderImageUrl = file_exists(public_path('images/' . $slider->image))
+                    ? asset('images/' . $slider->image)
+                    : (\Illuminate\Support\Facades\Storage::disk('public')->exists($slider->image)
+                        ? \Illuminate\Support\Facades\Storage::disk('public')->url($slider->image)
+                        : asset('storage/' . $slider->image));
+            @endphp
+            <div class="swiper-slide" style="background-image: url('{{ $sliderImageUrl }}');">
                 <div class="container hero-content text-center" data-aos="fade-up">
                     <h1 style="font-size: 3.5rem; font-weight: 700; margin-bottom: 1rem;">{{ $slider->title }}</h1>
                     <p style="font-size: 1.25rem; max-width: 800px; margin: 0 auto 2rem;">{{ $slider->subtitle }}</p>
@@ -105,7 +112,14 @@
         @foreach($popularNews as $post)
         <a href="{{ route('news.detail', $post->slug) }}" class="overlap-card">
             @if($post->image)
-            <img src="{{ file_exists(public_path('images/' . $post->image)) ? asset('images/' . $post->image) : asset('storage/' . $post->image) }}" alt="{{ $post->title }}">
+            @php
+                $imageUrl = file_exists(public_path('images/' . $post->image))
+                    ? asset('images/' . $post->image)
+                    : (\Illuminate\Support\Facades\Storage::disk('public')->exists($post->image)
+                        ? \Illuminate\Support\Facades\Storage::disk('public')->url($post->image)
+                        : asset('storage/' . $post->image));
+            @endphp
+            <img src="{{ $imageUrl }}" alt="{{ $post->title }}">
             @else
             <div style="width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: var(--radius-sm);"></div>
             @endif
@@ -228,7 +242,14 @@
         <div class="gallery-bento" data-aos="fade-up" data-aos-delay="100">
             @foreach($gallery as $item)
             <div class="gallery-item">
-                <img src="{{ file_exists(public_path('images/' . $item->image)) ? asset('images/' . $item->image) : asset('storage/' . $item->image) }}" alt="{{ $item->title }}">
+                @php
+                    $imageUrl = file_exists(public_path('images/' . $item->image))
+                        ? asset('images/' . $item->image)
+                        : (\Illuminate\Support\Facades\Storage::disk('public')->exists($item->image)
+                            ? \Illuminate\Support\Facades\Storage::disk('public')->url($item->image)
+                            : asset('storage/' . $item->image));
+                @endphp
+                <img src="{{ $imageUrl }}" alt="{{ $item->title }}">
                 <div class="gallery-overlay">
                     <h3>{{ $item->title }}</h3>
                     @if(isset($item->description))

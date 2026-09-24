@@ -18,21 +18,25 @@
                 @csrf
                 <div class="form-group">
                     <label for="name" class="form-label">Nama Lengkap</label>
-                    <input type="text" id="name" name="name" class="form-control" placeholder="Masukkan nama lengkap Anda" required>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="Masukkan nama lengkap Anda" value="{{ old('name') }}" required>
+                        @error('name') <small class="text-muted">{{ $message }}</small> @enderror
                 </div>
                 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
                     <div>
-                        <label for="email" class="form-label">Email (Opsional)</label>
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Alamat email Anda">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Alamat email Anda" value="{{ old('email') }}" required>
+                            @error('email') <small class="text-muted">{{ $message }}</small> @enderror
                     </div>
                     <div>
-                        <label for="phone" class="form-label">No. Handphone (Opsional)</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="No. HP / WhatsApp">
+                            <label for="phone" class="form-label">No. Handphone</label>
+                            <input type="tel" id="phone" name="phone" class="form-control" placeholder="No. HP / WhatsApp" value="{{ old('phone') }}" inputmode="numeric" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                            @error('phone') <small class="text-muted">{{ $message }}</small> @enderror
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="message" class="form-label">Isi Pengaduan / Pesan</label>
-                    <textarea id="message" name="message" class="form-control" rows="6" placeholder="Jelaskan detail pengaduan atau pesan Anda..." required></textarea>
+                        <textarea id="message" name="message" class="form-control" rows="6" placeholder="Jelaskan detail pengaduan atau pesan Anda..." required>{{ old('message') }}</textarea>
+                        @error('message') <small class="text-muted">{{ $message }}</small> @enderror
                 </div>
                 <button type="submit" class="btn btn-secondary" style="width: 100%; font-size: 1.1rem; padding: 1rem; border-radius: var(--radius-md);">Kirim Pengaduan</button>
             </form>

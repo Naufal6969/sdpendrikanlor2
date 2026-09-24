@@ -33,7 +33,12 @@ class PostResource extends Resource
                     ->required()
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('image')
-                    ->image(),
+                    ->image()
+                    ->disk(fn (?Post $record): string =>
+                        $record?->image && file_exists(public_path('images/' . $record->image))
+                            ? 'legacy_images'
+                            : 'public')
+                    ->directory('uploads/news'),
                 Forms\Components\Select::make('type')
                     ->options([
                         'news' => 'Berita',
@@ -54,7 +59,12 @@ class PostResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')
+                    ->disk('public')
+                    ->getStateUsing(fn (Post $record): ?string =>
+                        $record->image && file_exists(public_path('images/' . $record->image))
+                            ? asset('images/' . $record->image)
+                            : $record->image),
                 Tables\Columns\TextColumn::make('type')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_published')

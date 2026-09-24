@@ -9,7 +9,14 @@
             @foreach($posts as $post)
             <div class="card" style="display: flex; flex-direction: column;">
                 @if($post->image)
-                <img src="{{ file_exists(public_path('images/' . $post->image)) ? asset('images/' . $post->image) : asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="card-img" style="height: 220px; width: 100%; object-fit: cover;">
+                @php
+                    $imageUrl = file_exists(public_path('images/' . $post->image))
+                        ? asset('images/' . $post->image)
+                        : (\Illuminate\Support\Facades\Storage::disk('public')->exists($post->image)
+                            ? \Illuminate\Support\Facades\Storage::disk('public')->url($post->image)
+                            : asset('storage/' . $post->image));
+                @endphp
+                <img src="{{ $imageUrl }}" alt="{{ $post->title }}" class="card-img" style="height: 220px; width: 100%; object-fit: cover;">
                 @endif
                 <div class="card-body" style="flex: 1; display: flex; flex-direction: column;">
                     <span class="badge" style="align-self: flex-start;">{{ strtoupper($post->type) }}</span>
@@ -22,9 +29,27 @@
             @endforeach
         </div>
         
+        @if ($posts->total() > 0)
         <div class="mt-4">
-            {{ $posts->links() }}
+            <p class="text-muted text-center mb-2">
+                Menampilkan {{ $posts->firstItem() }} sampai {{ $posts->lastItem() }} dari {{ $posts->total() }} berita
+            </p>
+
+            @if ($posts->hasPages())
+            <nav aria-label="Navigasi halaman berita">
+                <ul class="pagination">
+                    @foreach ($posts->getUrlRange(1, $posts->lastPage()) as $page => $url)
+                        <li class="page-item {{ $page == $posts->currentPage() ? 'active' : '' }}">
+                            <a class="page-link" href="{{ $url }}" aria-label="Halaman {{ $page }}">
+                                {{ $page }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </nav>
+            @endif
         </div>
+        @endif
     </div>
 </section>
 @endsection

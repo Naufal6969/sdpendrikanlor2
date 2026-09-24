@@ -8,7 +8,14 @@
         <div class="gallery-bento" data-aos="fade-up" data-aos-delay="100">
             @foreach($gallery as $item)
             <div class="gallery-item">
-                <img src="{{ file_exists(public_path('images/' . $item->image)) ? asset('images/' . $item->image) : asset('storage/' . $item->image) }}" alt="{{ $item->title }}">
+                @php
+                    $imageUrl = file_exists(public_path('images/' . $item->image))
+                        ? asset('images/' . $item->image)
+                        : (\Illuminate\Support\Facades\Storage::disk('public')->exists($item->image)
+                            ? \Illuminate\Support\Facades\Storage::disk('public')->url($item->image)
+                            : asset('storage/' . $item->image));
+                @endphp
+                <img src="{{ $imageUrl }}" alt="{{ $item->title }}">
                 <div class="gallery-overlay">
                     <h3>{{ $item->title }}</h3>
                     @if($item->description)

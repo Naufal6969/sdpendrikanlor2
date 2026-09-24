@@ -25,7 +25,15 @@ class HeroSliderResource extends Resource
             ->schema([
                 \Filament\Forms\Components\TextInput::make('title')->maxLength(255),
                 \Filament\Forms\Components\TextInput::make('subtitle')->maxLength(255),
-                \Filament\Forms\Components\FileUpload::make('image')->image()->directory('sliders')->required()->columnSpanFull(),
+                \Filament\Forms\Components\FileUpload::make('image')
+                    ->image()
+                    ->disk(fn (?HeroSlider $record): string =>
+                        $record?->image && file_exists(public_path('images/' . $record->image))
+                            ? 'legacy_images'
+                            : 'public')
+                    ->directory('sliders')
+                    ->required()
+                    ->columnSpanFull(),
                 \Filament\Forms\Components\TextInput::make('button_text')->maxLength(255),
                 \Filament\Forms\Components\TextInput::make('button_url')->maxLength(255),
                 \Filament\Forms\Components\Toggle::make('is_active')->default(true),
@@ -37,7 +45,12 @@ class HeroSliderResource extends Resource
     {
         return $table
             ->columns([
-                \Filament\Tables\Columns\ImageColumn::make('image'),
+                \Filament\Tables\Columns\ImageColumn::make('image')
+                    ->disk('public')
+                    ->getStateUsing(fn (HeroSlider $record): ?string =>
+                        $record->image && file_exists(public_path('images/' . $record->image))
+                            ? asset('images/' . $record->image)
+                            : $record->image),
                 \Filament\Tables\Columns\TextColumn::make('title')->searchable(),
                 \Filament\Tables\Columns\IconColumn::make('is_active')->boolean(),
                 \Filament\Tables\Columns\TextColumn::make('order')->sortable(),

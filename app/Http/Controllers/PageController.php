@@ -64,13 +64,13 @@ class PageController extends Controller
     public function submitPengaduan(\Illuminate\Http\Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'nullable|email',
-            'phone' => 'nullable',
-            'message' => 'required',
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'phone' => ['required', 'string', 'max:30', 'regex:/^[0-9]+$/'],
+            'message' => ['required', 'string'],
         ]);
 
-        \App\Models\Complaint::create($request->all());
+        \App\Models\Complaint::create($request->only(['name', 'email', 'phone', 'message']));
 
         return back()->with('success', 'Pengaduan Anda berhasil dikirim.');
     }

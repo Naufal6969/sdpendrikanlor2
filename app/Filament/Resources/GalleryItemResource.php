@@ -27,6 +27,11 @@ class GalleryItemResource extends Resource
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image')
                     ->image()
+                    ->disk(fn (?GalleryItem $record): string =>
+                        $record?->image && file_exists(public_path('images/' . $record->image))
+                            ? 'legacy_images'
+                            : 'public')
+                    ->directory('uploads/gallery')
                     ->required(),
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
@@ -39,7 +44,12 @@ class GalleryItemResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')
+                    ->disk('public')
+                    ->getStateUsing(fn (GalleryItem $record): ?string =>
+                        $record->image && file_exists(public_path('images/' . $record->image))
+                            ? asset('images/' . $record->image)
+                            : $record->image),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

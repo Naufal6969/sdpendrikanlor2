@@ -42,10 +42,13 @@ class ComplaintResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->email()
+                    ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
                     ->tel()
-                    ->maxLength(255),
+                    ->required()
+                    ->rule('regex:/^[0-9]+$/')
+                    ->maxLength(30),
                 Forms\Components\Textarea::make('message')
                     ->required()
                     ->columnSpanFull(),
