@@ -43,9 +43,6 @@ class ProgramResource extends Resource
                 Forms\Components\Textarea::make('icon_svg')
                     ->label('SVG Icon (Opsional)')
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('image')
-                    ->image()
-                    ->directory('programs'),
                 Forms\Components\Toggle::make('is_active')
                     ->default(true),
             ]);
@@ -55,7 +52,6 @@ class ProgramResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')

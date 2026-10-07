@@ -14,12 +14,6 @@
             <p class="text-muted" style="font-size: 1.1rem; max-width: 700px; margin: 0 auto;">{{ $program->short_description }}</p>
         </div>
 
-        @if($program->image)
-            <div data-aos="fade-up" data-aos-delay="100" style="margin-bottom: 3rem; text-align: center;">
-                <img src="{{ asset('storage/' . $program->image) }}" alt="{{ $program->title }}" style="max-width: 100%; height: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);">
-            </div>
-        @endif
-
         <div class="program-content" style="max-width: 800px; margin: 0 auto; line-height: 1.8; font-size: 1.05rem;" data-aos="fade-up" data-aos-delay="200">
             @if($program->content)
                 {!! $program->content !!}
